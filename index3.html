@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>私のポートフォリオ</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Concert+One&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* -------------------------------------------
+        1. 変数・基本設定 (Design Tokens)
+        ------------------------------------------- */
+        :root {
+            --main-color: #4330F2; /* 紫: 創造性と力強さ */
+            --sub-color: #A8D100;  /* 黄緑: 生命力と成長 */
+            --bg-light: #F4FDEF;   /* 薄いグリーン: 優しさと自然 */
+            --white: #ffffff;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --font-body: 'Noto Sans JP', sans-serif;
+            --font-display: 'Concert One', cursive;
+            --header-height: 70px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: auto; } /* JSでスムーススクロールを制御するためauto */
+        
+        body {
+            font-family: var(--font-body);
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        a { text-decoration: none; color: var(--main-color); transition: 0.3s; }
+        ul { list-style: none; }
+
+        /* -------------------------------------------
+        2. アニメーション設定 (Fade In)
+        ------------------------------------------- */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* -------------------------------------------
+        3. ヘッダー & ナビゲーション (PC & Mobile)
+        ------------------------------------------- */
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        header h1 { font-family: var(--font-display); color: var(--main-color); font-size: 1.8rem; }
+
+        /* PCメニュー */
+        nav ul { display: flex; gap: 30px; }
+        nav a { font-weight: bold; position: relative; }
+        nav a:hover { color: var(--sub-color); }
+        
+        /* ハンバーガーボタン */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            position: relative;
+            z-index: 1100;
+        }
+        .menu-toggle span {
+            display: block;
+            width: 30px;
+            height: 2px;
+            background-color: var(--main-color);
+            position: absolute;
+            left: 7px;
+            transition: 0.4s;
+        }
+        .menu-toggle span:nth-child(1) { top: 13px; }
+        .menu-toggle span:nth-child(2) { top: 21px; }
+        .menu-toggle span:nth-child(3) { top: 29px; }
+
+        .menu-toggle.is-active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .menu-toggle.is-active span:nth-child(2) { opacity: 0; }
+        .menu-toggle.is-active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+        /* -------------------------------------------
+        4. セクション共通スタイル
+        ------------------------------------------- */
+        section { padding: 100px 0; }
+        h2 {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            color: var(--main-color);
+            border-bottom: 3px solid var(--sub-color);
+            display: inline-block;
+            margin-bottom: 40px;
+        }
+
+        /* -------------------------------------------
+        5. 各セクション詳細
+        ------------------------------------------- */
+        /* Hero */
+        .hero {
+            text-align: center;
+            background: linear-gradient(135deg, var(--bg-light) 0%, #ffffff 100%);
+            padding: 150px 0;
+        }
+        .hero .catchphrase { font-family: var(--font-display); color: var(--sub-color); font-size: 1.5rem; margin-bottom: 10px; }
+        .hero h2 { border: none; font-size: 3.5rem; margin-bottom: 20px; }
+
+        /* Skills */
+        .skill-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        .skill-item {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: 0.3s;
+        }
+        .skill-item:hover { transform: translateY(-5px) rotateZ(-0.5deg); } /* そよそよ揺れる */
+        .skill-item h3 { color: var(--sub-color); margin-bottom: 15px; }
+
+        /* Works (Grid) */
+        .work-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+        .work-item {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            transition: 0.3s;
+            text-align: center;
+        }
+        .work-item:hover { transform: scale(1.02); box-shadow: 0 15px 30px rgba(67, 48, 242, 0.15); } /* 日光で輝く感じ */
+        .work-item img { width: 100%; height: auto; cursor: zoom-in; border-bottom: 4px solid var(--sub-color); }
+        .work-item figcaption { padding: 15px; font-weight: bold; color: var(--main-color); }
+
+        /* Contact */
+        .contact form { max-width: 600px; margin: 0 auto; background: var(--white); padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: var(--main-color); }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;
+        }
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--sub-color); outline: none; box-shadow: 0 0 8px rgba(168, 209, 0, 0.3); }
+        button {
+            width: 100%; background: var(--main-color); color: white; padding: 15px; border: none; border-radius: 30px;
+            font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.3s;
+        }
+        button:hover { background: #3224C7; transform: translateY(-2px); }
+
+        /* Footer */
+        footer { background: var(--main-color); color: white; text-align: center; padding: 30px 0; margin-top: 50px; }
+
+        /* -------------------------------------------
+        6. UI Components (Overlay & Mobile Menu)
+        ------------------------------------------- */
+        /* 画像拡大用 */
+        #image-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9); display: none; justify-content: center; align-items: center;
+            z-index: 2000; cursor: zoom-out; opacity: 0; transition: opacity 0.4s;
+        }
+        #image-overlay.active { display: flex; opacity: 1; }
+        #image-overlay img { max-width: 85%; max-height: 85%; border: 4px solid white; border-radius: 4px; transform: scale(0.9); transition: 0.4s; }
+        #image-overlay.active img { transform: scale(1); }
+
+        /* スマホメニューオーバーレイ */
+        .menu-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: rgba(0,0,0,0.4); opacity: 0; visibility: hidden; transition: 0.3s; z-index: 1040;
+        }
+        .menu-overlay.is-visible { opacity: 1; visibility: visible; }
+
+        /* -------------------------------------------
+        7. レスポンシブ (Mobile Adjustments)
+        ------------------------------------------- */
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            nav {
+                position: fixed; top: 0; right: -100%; width: 80%; max-width: 300px; height: 100vh;
+                background-color: var(--white); padding-top: 100px; z-index: 1050; transition: 0.5s;
+            }
+            nav.is-open { right: 0; }
+            nav ul { flex-direction: column; align-items: center; gap: 40px; }
+            
+            .hero h2 { font-size: 2.5rem; }
+            section { padding: 60px 0; }
+            .work-gallery { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="header">
+        <div class="container">
+            <h1>My Portfolio</h1>
+            
+            <button class="menu-toggle" aria-label="メニュー">
+                <span></span><span></span><span></span>
+            </button>
+
+            <nav id="nav-menu">
+                <ul>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#skill">Skill</a></li>
+                    <li><a href="#works">Works</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="menu-overlay" id="menu-overlay"></div>
+
+    <main>
+        <section id="hero" class="hero">
+            <div class="container">
+                <p class="catchphrase fade-in">Creative & Natural Solutions</p>
+                <h2 class="fade-in">心地よい体験をデザインする</h2>
+                <p class="fade-in">植物の色彩と光のニュアンスを大切に、Webサイトを制作しています。</p>
+            </div>
+        </section>
+
+        <section id="about" class="container">
+            <h2 class="fade-in">About Me</h2>
+            <div class="fade-in">
+                <p>自然界の配色にインスピレーションを受けた、目に優しく、かつ印象に残るデザインを提案します。<br>
+                コミュニケーションを大切にし、あなたの想いを形にするお手伝いをいたします。</p>
+            </div>
+        </section>
+
+        <section id="skill" class="container">
+            <h2 class="fade-in">My Skills</h2>
+            <div class="skill-list">
+                <article class="skill-item fade-in">
+                    <h3>Design</h3>
+                    <p>Figma / Adobe XD / Photoshop<br>美しく、使いやすいUI/UXデザインを追求します。</p>
+                </article>
+                <article class="skill-item fade-in">
+                    <h3>Frontend</h3>
+                    <p>HTML5 / CSS3 / JavaScript / React<br>動きのある、モダンなWebサイト制作が可能です。</p>
+                </article>
+                <article class="skill-item fade-in">
+                    <h3>WordPress</h3>
+                    <p>Theme Customization / PHP<br>更新性の高いオリジナルテーマ作成に対応します。</p>
+                </article>
+            </div>
+        </section>
+
+        <section id="works" class="container">
+            <h2 class="fade-in">Selected Works</h2>
+            <div class="work-gallery">
+                <article class="work-item fade-in">
+                    <figure>
+                        <img src="https://via.placeholder.com/600x450/F4FDEF/4330F2?text=Project+01" alt="作品1" class="zoomable">
+                        <figcaption>作品タイトル 01</figcaption>
+                    </figure>
+                </article>
+                <article class="work-item fade-in">
+                    <figure>
+                        <img src="https://via.placeholder.com/600x450/F4FDEF/A8D100?text=Project+02" alt="作品2" class="zoomable">
+                        <figcaption>作品タイトル 02</figcaption>
+                    </figure>
+                </article>
+                <article class="work-item fade-in">
+                    <figure>
+                        <img src="https://via.placeholder.com/600x450/F4FDEF/4330F2?text=Project+03" alt="作品3" class="zoomable">
+                        <figcaption>作品タイトル 03</figcaption>
+                    </figure>
+                </article>
+                <article class="work-item fade-in">
+                    <figure>
+                        <img src="https://via.placeholder.com/600x450/F4FDEF/A8D100?text=Project+04" alt="作品4" class="zoomable">
+                        <figcaption>作品タイトル 04</figcaption>
+                    </figure>
+                </article>
+                <article class="work-item fade-in">
+                    <figure>
+                        <img src="https://via.placeholder.com/600x450/F4FDEF/4330F2?text=Project+05" alt="作品5" class="zoomable">
+                        <figcaption>作品タイトル 05</figcaption>
+                    </figure>
+                </article>
+                <article class="work-item fade-in">
+                    <figure>
+                        <img src="https://via.placeholder.com/600x450/F4FDEF/A8D100?text=Project+06" alt="作品6" class="zoomable">
+                        <figcaption>作品タイトル 06</figcaption>
+                    </figure>
+                </article>
+            </div>
+        </section>
+
+        <section id="contact" class="container">
+            <h2 class="fade-in">Contact</h2>
+            <form action="#" class="fade-in">
+                <div class="form-group">
+                    <label>お名前</label>
+                    <input type="text" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <label>メールアドレス</label>
+                    <input type="email" placeholder="email@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>メッセージ</label>
+                    <textarea rows="5" placeholder="ご相談内容をご記入ください"></textarea>
+                </div>
+                <button type="submit">送信する</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 My Portfolio. Inspired by Nature.</p>
+        </div>
+    </footer>
+
+    <div id="image-overlay">
+        <img src="" alt="拡大画像">
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            /* --- 1. スクロールフェードイン --- */
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+
+            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+
+            /* --- 2. ハンバーガーメニュー制御 --- */
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navMenu = document.getElementById('nav-menu');
+            const overlay = document.getElementById('menu-overlay');
+
+            const toggleMenu = () => {
+                menuToggle.classList.toggle('is-active');
+                navMenu.classList.toggle('is-open');
+                overlay.classList.toggle('is-visible');
+                document.body.style.overflow = navMenu.classList.contains('is-open') ? 'hidden' : '';
+            };
+
+            menuToggle.addEventListener('click', toggleMenu);
+            overlay.addEventListener('click', toggleMenu);
+
+
+            /* --- 3. スムーススクロール (ヘッダー高さを考慮) --- */
+            const header = document.getElementById('header');
+            document.querySelectorAll('nav a').forEach(link => {
+                link.addEventListener('click', e => {
+                    const href = link.getAttribute('href');
+                    if (href.startsWith('#')) {
+                        e.preventDefault();
+                        if (navMenu.classList.contains('is-open')) toggleMenu(); // スマホ時は閉じる
+
+                        const target = document.querySelector(href);
+                        if (target) {
+                            const offset = header.offsetHeight;
+                            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                            window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                        }
+                    }
+                });
+            });
+
+
+            /* --- 4. 画像拡大機能 (Lightbox) --- */
+            const imgOverlay = document.getElementById('image-overlay');
+            const overlayImg = imgOverlay.querySelector('img');
+            
+            document.querySelectorAll('.zoomable').forEach(img => {
+                img.addEventListener('click', () => {
+                    overlayImg.src = img.src;
+                    imgOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+
+            const closeImgOverlay = () => {
+                imgOverlay.classList.remove('active');
+                if (!navMenu.classList.contains('is-open')) document.body.style.overflow = '';
+            };
+
+            imgOverlay.addEventListener('click', closeImgOverlay);
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') closeImgOverlay();
+            });
+        });
+    </script>
+</body>
+</html>
