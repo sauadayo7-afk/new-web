@@ -8,421 +8,671 @@
     <link href="https://fonts.googleapis.com/css2?family=Concert+One&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* -------------------------------------------
-        1. 変数・基本設定 (Design Tokens)
-        ------------------------------------------- */
+        /*
+        -------------------------------------------
+        CSS Design: ナチュラル＆フローラル
+        メインカラー (紫): #4330F2 (力強さ、創造性)
+        サブカラー (黄緑): #A8D100 (生命力、成長)
+        背景色 (薄い緑): #F4FDEF (優しさ、自然)
+        フォント: Noto Sans JP (本文), Concert One (タイトル)
+        -------------------------------------------
+        */
         :root {
-            --main-color: #4330F2; /* 紫: 創造性と力強さ */
-            --sub-color: #A8D100;  /* 黄緑: 生命力と成長 */
-            --bg-light: #F4FDEF;   /* 薄いグリーン: 優しさと自然 */
+            /* カラーパレット */
+            --main-color: #4330F2; /* 紫 */
+            --sub-color: #A8D100; /* 黄緑 */
+            --bg-light: #F4FDEF; /* 薄いグリーン */
             --white: #ffffff;
             --text-dark: #333333;
             --text-light: #666666;
+            /* フォント */
             --font-body: 'Noto Sans JP', sans-serif;
             --font-display: 'Concert One', cursive;
-            --header-height: 70px;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: auto; } /* JSでスムーススクロールを制御するためauto */
-        
+        /* -------------------------------------------
+        リセットCSS & 基本設定
+        ------------------------------------------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             font-family: var(--font-body);
             color: var(--text-dark);
             background-color: var(--bg-light);
             line-height: 1.6;
-            overflow-x: hidden;
+            /* JSでヘッダーの高さを考慮したスクロール制御を行うため、CSSのスクロール挙動はリセット */
         }
-
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        a { text-decoration: none; color: var(--main-color); transition: 0.3s; }
-        ul { list-style: none; }
-
+        a {
+            text-decoration: none;
+            color: var(--main-color);
+            transition: color 0.3s, transform 0.3s;
+        }
+        a:hover {
+            color: var(--sub-color);
+            transform: translateY(-1px);
+        }
+        ul {
+            list-style: none;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        h1, h2, h3 {
+            font-family: var(--font-display);
+            margin-bottom: 0.5em;
+            letter-spacing: 0.05em;
+        }
+        h2 {
+            font-size: 2.5rem;
+            color: var(--main-color);
+            padding-bottom: 0.3em;
+            border-bottom: 3px solid var(--sub-color);
+            margin-top: 1.5em;
+        }
         /* -------------------------------------------
-        2. アニメーション設定 (Fade In)
-        ------------------------------------------- */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-
-        .fade-in.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* -------------------------------------------
-        3. ヘッダー & ナビゲーション (PC & Mobile)
+        ヘッダー & ナビゲーション
         ------------------------------------------- */
         header {
             background-color: rgba(255, 255, 255, 0.95);
-            height: var(--header-height);
-            display: flex;
-            align-items: center;
+            padding: 15px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
-
         header .container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
         }
-
-        header h1 { font-family: var(--font-display); color: var(--main-color); font-size: 1.8rem; }
-
-        /* PCメニュー */
-        nav ul { display: flex; gap: 30px; }
-        nav a { font-weight: bold; position: relative; }
-        nav a:hover { color: var(--sub-color); }
-        
-        /* ハンバーガーボタン */
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            width: 44px;
-            height: 44px;
-            position: relative;
-            z-index: 1100;
-        }
-        .menu-toggle span {
-            display: block;
-            width: 30px;
-            height: 2px;
-            background-color: var(--main-color);
-            position: absolute;
-            left: 7px;
-            transition: 0.4s;
-        }
-        .menu-toggle span:nth-child(1) { top: 13px; }
-        .menu-toggle span:nth-child(2) { top: 21px; }
-        .menu-toggle span:nth-child(3) { top: 29px; }
-
-        .menu-toggle.is-active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
-        .menu-toggle.is-active span:nth-child(2) { opacity: 0; }
-        .menu-toggle.is-active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
-
-        /* -------------------------------------------
-        4. セクション共通スタイル
-        ------------------------------------------- */
-        section { padding: 100px 0; }
-        h2 {
-            font-family: var(--font-display);
-            font-size: 2.5rem;
+        header h1 {
+            font-size: 1.8rem;
             color: var(--main-color);
-            border-bottom: 3px solid var(--sub-color);
-            display: inline-block;
-            margin-bottom: 40px;
         }
-
-        /* -------------------------------------------
-        5. 各セクション詳細
-        ------------------------------------------- */
-        /* Hero */
-        .hero {
-            text-align: center;
-            background: linear-gradient(135deg, var(--bg-light) 0%, #ffffff 100%);
-            padding: 150px 0;
-        }
-        .hero .catchphrase { font-family: var(--font-display); color: var(--sub-color); font-size: 1.5rem; margin-bottom: 10px; }
-        .hero h2 { border: none; font-size: 3.5rem; margin-bottom: 20px; }
-
-        /* Skills */
-        .skill-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        nav ul {
+            display: flex;
             gap: 25px;
         }
-        .skill-item {
-            background: var(--white);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: 0.3s;
+        nav a {
+            font-weight: 700;
+            font-family: var(--font-body);
         }
-        .skill-item:hover { transform: translateY(-5px) rotateZ(-0.5deg); } /* そよそよ揺れる */
-        .skill-item h3 { color: var(--sub-color); margin-bottom: 15px; }
 
-        /* Works (Grid) */
+        /* ハンバーガーメニューボタン（初期は非表示） */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            width: 30px;
+            height: 24px;
+            position: relative;
+            z-index: 1100;
+            background: none;
+            border: none;
+        }
+        .hamburger span {
+            display: block;
+            position: absolute;
+            height: 3px;
+            width: 100%;
+            background: var(--main-color);
+            border-radius: 3px;
+            transition: 0.3s ease-in-out;
+        }
+        .hamburger span:nth-child(1) { top: 0; }
+        .hamburger span:nth-child(2) { top: 10px; }
+        .hamburger span:nth-child(3) { top: 20px; }
+
+        /* ハンバーガーメニューのアニメーション（active時） */
+        .hamburger.active span:nth-child(1) {
+            top: 10px;
+            transform: rotate(45deg);
+        }
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.active span:nth-child(3) {
+            top: 10px;
+            transform: rotate(-45deg);
+        }
+        
+        /* -------------------------------------------
+        セクション共通スタイル
+        ------------------------------------------- */
+        section {
+            padding: 80px 0;
+            border-bottom: 1px solid rgba(168, 209, 0, 0.1); 
+        }
+        /* -------------------------------------------
+        ヒーローセクション
+        ------------------------------------------- */
+        .hero {
+            background: linear-gradient(135deg, var(--bg-light) 0%, rgba(255, 255, 255, 1) 100%);
+            text-align: center;
+            padding: 120px 0;
+        }
+        .hero h2 {
+            font-size: 3rem;
+            color: var(--main-color);
+            border: none;
+        }
+        .hero .catchphrase {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            color: var(--sub-color);
+            margin-bottom: 20px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 30px;
+            background-color: var(--main-color);
+            color: var(--white);
+            border-radius: 30px;
+            margin-top: 20px;
+            font-weight: 700;
+            box-shadow: 0 4px 8px rgba(67, 48, 242, 0.2);
+        }
+        .button:hover {
+            background-color: #5544FF;
+            box-shadow: 0 6px 12px rgba(67, 48, 242, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* -------------------------------------------
+        About & Skillセクション
+        ------------------------------------------- */
+        .about h3, .skill h3 {
+            color: var(--sub-color);
+            font-family: var(--font-body);
+            font-weight: 700;
+            margin-top: 1.5em;
+        }
+        .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .skill-list article {
+            flex: 1 1 300px;
+            background-color: var(--white);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        .skill-list article:hover {
+            transform: translateY(-5px) rotateZ(-0.5deg);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        .skill-list ul {
+            padding-left: 20px;
+            list-style: disc;
+            color: var(--text-light);
+        }
+        /* -------------------------------------------
+        Worksセクション (グリッドレイアウト)
+        ------------------------------------------- */
         .work-gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 30px;
+            margin-top: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         }
         .work-item {
-            background: var(--white);
-            border-radius: 12px;
+            background-color: var(--white);
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s, transform 0.3s;
             text-align: center;
         }
-        .work-item:hover { transform: scale(1.02); box-shadow: 0 15px 30px rgba(67, 48, 242, 0.15); } /* 日光で輝く感じ */
-        .work-item img { width: 100%; height: auto; cursor: zoom-in; border-bottom: 4px solid var(--sub-color); }
-        .work-item figcaption { padding: 15px; font-weight: bold; color: var(--main-color); }
-
-        /* Contact */
-        .contact form { max-width: 600px; margin: 0 auto; background: var(--white); padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .form-group { margin-bottom: 20px; text-align: left; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: var(--main-color); }
-        .form-group input, .form-group textarea {
-            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;
+        .work-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
-        .form-group input:focus, .form-group textarea:focus { border-color: var(--sub-color); outline: none; box-shadow: 0 0 8px rgba(168, 209, 0, 0.3); }
-        button {
-            width: 100%; background: var(--main-color); color: white; padding: 15px; border: none; border-radius: 30px;
-            font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.3s;
+        .work-item figure {
+            margin-bottom: 10px;
         }
-        button:hover { background: #3224C7; transform: translateY(-2px); }
-
-        /* Footer */
-        footer { background: var(--main-color); color: white; text-align: center; padding: 30px 0; margin-top: 50px; }
+        .work-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-bottom: 3px solid var(--sub-color); 
+            cursor: pointer; /* 拡大できることがわかるようにカーソルを変更 */
+            transition: opacity 0.3s;
+        }
+        .work-item img:hover {
+            opacity: 0.85;
+        }
+        .work-item figcaption {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--main-color);
+            padding: 15px 10px 5px;
+        }
+        .work-item p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            padding: 0 15px 10px;
+        }
+        .work-item .view-link {
+            display: block;
+            background-color: var(--sub-color);
+            color: var(--white);
+            padding: 10px;
+            font-weight: 700;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        .work-item .view-link:hover {
+            background-color: #8FCC00;
+            transform: none;
+        }
 
         /* -------------------------------------------
-        6. UI Components (Overlay & Mobile Menu)
+        画像拡大オーバーレイ用スタイル
         ------------------------------------------- */
-        /* 画像拡大用 */
-        #image-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9); display: none; justify-content: center; align-items: center;
-            z-index: 2000; cursor: zoom-out; opacity: 0; transition: opacity 0.4s;
+        .lightbox-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* 暗い背景 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
-        #image-overlay.active { display: flex; opacity: 1; }
-        #image-overlay img { max-width: 85%; max-height: 85%; border: 4px solid white; border-radius: 4px; transform: scale(0.9); transition: 0.4s; }
-        #image-overlay.active img { transform: scale(1); }
-
-        /* スマホメニューオーバーレイ */
-        .menu-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: rgba(0,0,0,0.4); opacity: 0; visibility: hidden; transition: 0.3s; z-index: 1040;
+        .lightbox-overlay.active {
+            opacity: 1;
+            visibility: visible;
         }
-        .menu-overlay.is-visible { opacity: 1; visibility: visible; }
+        .lightbox-overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 5px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        .lightbox-overlay.active img {
+            transform: scale(1);
+        }
 
         /* -------------------------------------------
-        7. レスポンシブ (Mobile Adjustments)
+        Contactセクション
+        ------------------------------------------- */
+        .contact {
+            text-align: center;
+        }
+        .contact p {
+            margin-bottom: 30px;
+        }
+        .contact form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            text-align: left;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 700;
+            color: var(--main-color);
+        }
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: var(--font-body);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--sub-color);
+            box-shadow: 0 0 5px rgba(168, 209, 0, 0.5);
+            outline: none;
+        }
+        .contact button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: var(--main-color);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .contact button[type="submit"]:hover {
+            background-color: #5544FF;
+        }
+        .social-links {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        /* -------------------------------------------
+        フッター
+        ------------------------------------------- */
+        footer {
+            background-color: var(--main-color);
+            color: var(--white);
+            text-align: center;
+            padding: 20px 0;
+            font-size: 0.9rem;
+        }
+        /* -------------------------------------------
+        レスポンシブ対応 (768px以下)
         ------------------------------------------- */
         @media (max-width: 768px) {
-            .menu-toggle { display: block; }
-            nav {
-                position: fixed; top: 0; right: -100%; width: 80%; max-width: 300px; height: 100vh;
-                background-color: var(--white); padding-top: 100px; z-index: 1050; transition: 0.5s;
+            h2 {
+                font-size: 2rem;
             }
-            nav.is-open { right: 0; }
-            nav ul { flex-direction: column; align-items: center; gap: 40px; }
-            
-            .hero h2 { font-size: 2.5rem; }
-            section { padding: 60px 0; }
-            .work-gallery { grid-template-columns: 1fr; }
+            .hero {
+                padding: 80px 0 60px;
+            }
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+
+            /* ハンバーガーメニューを表示 */
+            .hamburger {
+                display: block;
+            }
+
+            /* ナビゲーションをドロワーメニューに変更 */
+            nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background-color: var(--white);
+                box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+                transition: right 0.3s ease-in-out;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1050;
+            }
+            nav.active {
+                right: 0;
+            }
+            nav ul {
+                flex-direction: column;
+                gap: 30px;
+                text-align: center;
+            }
+            nav a {
+                font-size: 1.2rem;
+            }
+
+            section {
+                padding: 60px 0;
+            }
+            .skill-list {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .work-gallery {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-
-    <header id="header">
+    <header>
         <div class="container">
-            <h1>My Portfolio</h1>
-            
-            <button class="menu-toggle" aria-label="メニュー">
-                <span></span><span></span><span></span>
+            <h1>私のポートフォリオ</h1>
+            <!-- ハンバーガーボタン -->
+            <button class="hamburger" id="js-hamburger" aria-label="メニューを開閉する">
+                <span></span>
+                <span></span>
+                <span></span>
             </button>
-
-            <nav id="nav-menu">
+            <nav id="js-nav">
                 <ul>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#skill">Skill</a></li>
-                    <li><a href="#works">Works</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#about" class="js-menu-link">About</a></li>
+                    <li><a href="#skill" class="js-menu-link">Skill</a></li>
+                    <li><a href="#works" class="js-menu-link">Works</a></li>
+                    <li><a href="#contact" class="js-menu-link">Contact</a></li>
                 </ul>
             </nav>
         </div>
     </header>
-
-    <div class="menu-overlay" id="menu-overlay"></div>
-
     <main>
+        
         <section id="hero" class="hero">
             <div class="container">
-                <p class="catchphrase fade-in">Creative & Natural Solutions</p>
-                <h2 class="fade-in">心地よい体験をデザインする</h2>
-                <p class="fade-in">植物の色彩と光のニュアンスを大切に、Webサイトを制作しています。</p>
+                <p class="catchphrase">「夢」を「形」にするウェブクリエイター</p>
+                <h2>ようこそ、私のポートフォリオへ</h2>
+                <p>○○と申します。主にウェブデザインとフロントエンド開発を中心に活動しています。好奇心と探求心を忘れず、常に新しい技術を学ぶことを心がけています。</p>
+                <a href="#about" class="button js-menu-link">さらに詳しく</a>
             </div>
         </section>
-
-        <section id="about" class="container">
-            <h2 class="fade-in">About Me</h2>
-            <div class="fade-in">
-                <p>自然界の配色にインスピレーションを受けた、目に優しく、かつ印象に残るデザインを提案します。<br>
-                コミュニケーションを大切にし、あなたの想いを形にするお手伝いをいたします。</p>
+        <section id="about" class="about">
+            <div class="container">
+                <h2>私について - About Me</h2>
+                <p>〇〇県出身。大学卒業後、〇〇業界で〇年間勤務。その後、ウェブ制作の世界に魅了され、独学およびスクールで技術を習得しました。</p>
+                <h3>私の理念</h3>
+                <p>ユーザーにとって使いやすく、かつ魅力的なデザインを実現することを目指しています。コミュニケーションを大切にし、クライアント様の要望を深く理解した上で最適なソリューションを提供します。</p>
             </div>
         </section>
-
-        <section id="skill" class="container">
-            <h2 class="fade-in">My Skills</h2>
-            <div class="skill-list">
-                <article class="skill-item fade-in">
-                    <h3>Design</h3>
-                    <p>Figma / Adobe XD / Photoshop<br>美しく、使いやすいUI/UXデザインを追求します。</p>
-                </article>
-                <article class="skill-item fade-in">
-                    <h3>Frontend</h3>
-                    <p>HTML5 / CSS3 / JavaScript / React<br>動きのある、モダンなWebサイト制作が可能です。</p>
-                </article>
-                <article class="skill-item fade-in">
-                    <h3>WordPress</h3>
-                    <p>Theme Customization / PHP<br>更新性の高いオリジナルテーマ作成に対応します。</p>
-                </article>
-            </div>
-        </section>
-
-        <section id="works" class="container">
-            <h2 class="fade-in">Selected Works</h2>
-            <div class="work-gallery">
-                <article class="work-item fade-in">
-                    <figure>
-                        <img src="https://via.placeholder.com/600x450/F4FDEF/4330F2?text=Project+01" alt="作品1" class="zoomable">
-                        <figcaption>作品タイトル 01</figcaption>
-                    </figure>
-                </article>
-                <article class="work-item fade-in">
-                    <figure>
-                        <img src="https://via.placeholder.com/600x450/F4FDEF/A8D100?text=Project+02" alt="作品2" class="zoomable">
-                        <figcaption>作品タイトル 02</figcaption>
-                    </figure>
-                </article>
-                <article class="work-item fade-in">
-                    <figure>
-                        <img src="https://via.placeholder.com/600x450/F4FDEF/4330F2?text=Project+03" alt="作品3" class="zoomable">
-                        <figcaption>作品タイトル 03</figcaption>
-                    </figure>
-                </article>
-                <article class="work-item fade-in">
-                    <figure>
-                        <img src="https://via.placeholder.com/600x450/F4FDEF/A8D100?text=Project+04" alt="作品4" class="zoomable">
-                        <figcaption>作品タイトル 04</figcaption>
-                    </figure>
-                </article>
-                <article class="work-item fade-in">
-                    <figure>
-                        <img src="https://via.placeholder.com/600x450/F4FDEF/4330F2?text=Project+05" alt="作品5" class="zoomable">
-                        <figcaption>作品タイトル 05</figcaption>
-                    </figure>
-                </article>
-                <article class="work-item fade-in">
-                    <figure>
-                        <img src="https://via.placeholder.com/600x450/F4FDEF/A8D100?text=Project+06" alt="作品6" class="zoomable">
-                        <figcaption>作品タイトル 06</figcaption>
-                    </figure>
-                </article>
-            </div>
-        </section>
-
-        <section id="contact" class="container">
-            <h2 class="fade-in">Contact</h2>
-            <form action="#" class="fade-in">
-                <div class="form-group">
-                    <label>お名前</label>
-                    <input type="text" placeholder="Your Name" required>
+        <section id="skill" class="skill">
+            <div class="container">
+                <h2>スキル - Skills</h2>
+                <div class="skill-list">
+                    <article>
+                        <h3>マークアップ & スタイリング</h3>
+                        <ul>
+                            <li>HTML5: セマンティックなマークアップ</li>
+                            <li>CSS3: Sass, BEM, レスポンシブデザイン</li>
+                        </ul>
+                    </article>
+                    <article>
+                        <h3>プログラミング</h3>
+                        <ul>
+                            <li>JavaScript (ES6+): DOM操作、非同期処理</li>
+                            <li>React / Vue.js など (必要に応じて追記)</li>
+                        </ul>
+                    </article>
+                    <article>
+                        <h3>デザイン & ツール</h3>
+                        <ul>
+                            <li>Figma / Adobe XD: ワイヤーフレーム、プロトタイプ作成</li>
+                            <li>Photoshop / Illustrator: 画像編集、素材作成</li>
+                        </ul>
+                    </article>
                 </div>
-                <div class="form-group">
-                    <label>メールアドレス</label>
-                    <input type="email" placeholder="email@example.com" required>
+            </div>
+        </section>
+        <section id="works" class="works">
+            <div class="container">
+                <h2>制作実績 - Works</h2>
+                <div class="work-gallery">
+                    <article class="work-item">
+                        <figure>
+                            <img src="https://via.placeholder.com/400x300/F4FDEF/4330F2?text=Work+1" alt="作品1のサムネイル" class="js-lightbox-img">
+                            <figcaption>作品タイトル1</figcaption>
+                        </figure>
+                        <p>使用技術: HTML, CSS, JavaScript</p>
+                        <a href="work_detail01.html" target="_blank" class="view-link">詳細を見る</a>
+                    </article>
+                    <article class="work-item">
+                        <figure>
+                            <img src="https://via.placeholder.com/400x300/F4FDEF/A8D100?text=Work+2" alt="作品2のサムネイル" class="js-lightbox-img">
+                            <figcaption>作品タイトル2</figcaption>
+                        </figure>
+                        <p>使用技術: React, TypeScript</p>
+                        <a href="work_detail02.html" target="_blank" class="view-link">詳細を見る</a>
+                    </article>
+                    
+                    <article class="work-item">
+                        <figure>
+                            <img src="https://via.placeholder.com/400x300/F4FDEF/4330F2?text=Work+3" alt="作品3のサムネイル" class="js-lightbox-img">
+                            <figcaption>作品タイトル3</figcaption>
+                        </figure>
+                        <p>使用技術: WordPress, PHP</p>
+                        <a href="work_detail03.html" target="_blank" class="view-link">詳細を見る</a>
+                    </article>
+                    
+                    <article class="work-item">
+                        <figure>
+                            <img src="https://via.placeholder.com/400x300/F4FDEF/A8D100?text=Work+4" alt="作品4のサムネイル" class="js-lightbox-img">
+                            <figcaption>作品タイトル4</figcaption>
+                        </figure>
+                        <p>使用技術: Figma, HTML, CSS</p>
+                        <a href="work_detail04.html" target="_blank" class="view-link">詳細を見る</a>
+                    </article>
+                    
+                    <article class="work-item">
+                        <figure>
+                            <img src="https://via.placeholder.com/400x300/F4FDEF/4330F2?text=Work+5" alt="作品5のサムネイル" class="js-lightbox-img">
+                            <figcaption>作品タイトル5</figcaption>
+                        </figure>
+                        <p>使用技術: JavaScript (Vanilla)</p>
+                        <a href="work_detail05.html" target="_blank" class="view-link">詳細を見る</a>
+                    </article>
+                    <article class="work-item">
+                        <figure>
+                            <img src="https://via.placeholder.com/400x300/F4FDEF/A8D100?text=Work+6" alt="作品6のサムネイル" class="js-lightbox-img">
+                            <figcaption>作品タイトル6</figcaption>
+                        </figure>
+                        <p>使用技術: HTML, CSSアニメーション</p>
+                        <a href="work_detail06.html" target="_blank" class="view-link">詳細を見る</a>
+                    </article>
                 </div>
-                <div class="form-group">
-                    <label>メッセージ</label>
-                    <textarea rows="5" placeholder="ご相談内容をご記入ください"></textarea>
+            </div>
+        </section>
+        <section id="contact" class="contact">
+            <div class="container">
+                <h2>お問い合わせ - Contact</h2>
+                <p>ご依頼やご相談など、お気軽にご連絡ください。</p>
+                <form action="#" method="POST">
+                    <div class="form-group">
+                        <label for="name">お名前:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">メールアドレス:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">メッセージ:</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit">送信</button>
+                </form>
+                <div class="social-links">
+                    <p>SNS:</p>
+                    <a href="#" target="_blank">X (旧Twitter)</a> | 
+                    <a href="#" target="_blank">GitHub</a>
                 </div>
-                <button type="submit">送信する</button>
-            </form>
+            </div>
         </section>
     </main>
-
     <footer>
         <div class="container">
-            <p>&copy; 2025 My Portfolio. Inspired by Nature.</p>
+            <p>&copy; 2025 My Portfolio. All rights reserved.</p>
         </div>
     </footer>
 
-    <div id="image-overlay">
-        <img src="" alt="拡大画像">
+    <!-- 画像拡大用ライトボックスのHTML要素 -->
+    <div class="lightbox-overlay" id="js-lightbox">
+        <img src="" alt="拡大画像" id="js-lightbox-img">
     </div>
 
+    <!-- JavaScriptの実装 -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            
-            /* --- 1. スクロールフェードイン --- */
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                    }
+            const header = document.querySelector('header');
+            const hamburger = document.getElementById('js-hamburger');
+            const nav = document.getElementById('js-nav');
+            const menuLinks = document.querySelectorAll('.js-menu-link');
+
+            // 1. ハンバーガーメニューの開閉処理
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                nav.classList.toggle('active');
+            });
+
+            // メニュー外（またはメニューリンク）をクリックしたら閉じる
+            menuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    hamburger.classList.remove('active');
+                    nav.classList.remove('active');
                 });
-            }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+            });
 
-            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+            document.addEventListener('click', (e) => {
+                if (!nav.contains(e.target) && !hamburger.contains(e.target) && nav.classList.contains('active')) {
+                    hamburger.classList.remove('active');
+                    nav.classList.remove('active');
+                }
+            });
 
-
-            /* --- 2. ハンバーガーメニュー制御 --- */
-            const menuToggle = document.querySelector('.menu-toggle');
-            const navMenu = document.getElementById('nav-menu');
-            const overlay = document.getElementById('menu-overlay');
-
-            const toggleMenu = () => {
-                menuToggle.classList.toggle('is-active');
-                navMenu.classList.toggle('is-open');
-                overlay.classList.toggle('is-visible');
-                document.body.style.overflow = navMenu.classList.contains('is-open') ? 'hidden' : '';
-            };
-
-            menuToggle.addEventListener('click', toggleMenu);
-            overlay.addEventListener('click', toggleMenu);
-
-
-            /* --- 3. スムーススクロール (ヘッダー高さを考慮) --- */
-            const header = document.getElementById('header');
-            document.querySelectorAll('nav a').forEach(link => {
-                link.addEventListener('click', e => {
-                    const href = link.getAttribute('href');
-                    if (href.startsWith('#')) {
+            // 2. ヘッダーの高さを考慮したスムーススクロール
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href && href.startsWith('#') && href.length > 1) {
                         e.preventDefault();
-                        if (navMenu.classList.contains('is-open')) toggleMenu(); // スマホ時は閉じる
-
                         const target = document.querySelector(href);
                         if (target) {
-                            const offset = header.offsetHeight;
-                            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
-                            window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                            const headerHeight = header.offsetHeight;
+                            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+                            
+                            window.scrollTo({
+                                top: targetPosition,
+                                behavior: 'smooth'
+                            });
                         }
                     }
                 });
             });
 
+            // 3. 画像の拡大表示（ライトボックス）機能
+            const lightbox = document.getElementById('js-lightbox');
+            const lightboxImg = document.getElementById('js-lightbox-img');
+            const galleryImages = document.querySelectorAll('.js-lightbox-img');
 
-            /* --- 4. 画像拡大機能 (Lightbox) --- */
-            const imgOverlay = document.getElementById('image-overlay');
-            const overlayImg = imgOverlay.querySelector('img');
-            
-            document.querySelectorAll('.zoomable').forEach(img => {
+            // 画像クリックで拡大
+            galleryImages.forEach(img => {
                 img.addEventListener('click', () => {
-                    overlayImg.src = img.src;
-                    imgOverlay.classList.add('active');
-                    document.body.style.overflow = 'hidden';
+                    lightboxImg.src = img.src;
+                    lightbox.classList.add('active');
                 });
             });
 
-            const closeImgOverlay = () => {
-                imgOverlay.classList.remove('active');
-                if (!navMenu.classList.contains('is-open')) document.body.style.overflow = '';
-            };
+            // 背景（オーバーレイ）または画像をクリックしたら閉じる
+            lightbox.addEventListener('click', () => {
+                lightbox.classList.remove('active');
+            });
 
-            imgOverlay.addEventListener('click', closeImgOverlay);
-            document.addEventListener('keydown', e => {
-                if (e.key === 'Escape') closeImgOverlay();
+            // ESCキーでも閉じる
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                    lightbox.classList.remove('active');
+                }
             });
         });
     </script>
